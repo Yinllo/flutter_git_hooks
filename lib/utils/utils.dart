@@ -17,12 +17,13 @@ class Utils {
   /// get path of git_hooks library
   static String? getOwnPath() {
     var pacPath = path.fromUri(path.current + '/.packages');
+    print("getOwnPath--" + pacPath);
     var pac = File(pacPath);
     var a = pac.readAsStringSync();
     var b = a.split('\n');
     String? resPath;
     b.forEach((v) {
-      if (v.startsWith('flutter_hooks:')) {
+      if (v.startsWith('lint_plugin:')) {
         var index = v.indexOf(':');
         var lastIndex = v.lastIndexOf('lib');
         resPath = v.substring(index + 1, lastIndex);
