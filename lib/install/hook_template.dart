@@ -20,13 +20,11 @@ fi
   temp += '''
   
 hookName=`basename "\$0"`
+echo "git_hooks > \$hookName"
 flutter pub run lint_plugin:preCommit \$hookName
   if [ "\$?" -ne "0" ];then
     exit 1
   fi
-else
-  echo "git_hooks > \$hookName"
-fi
 ''';
   return temp;
 }
