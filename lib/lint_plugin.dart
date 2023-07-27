@@ -31,6 +31,7 @@ class FlutterGitHooksPlugin {
 
   static Future<bool> preCommit() async {
     // return await runStaticAnalysis();
+    return true;
   }
 
   static Future<bool> commitMsg() async {
