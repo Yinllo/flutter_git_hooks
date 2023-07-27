@@ -15,7 +15,7 @@ void main(List<dynamic>? arguments) {
         var text = f.readAsStringSync();
         Map yaml = loadYaml(text);
         String? version = yaml['version'];
-        print(version);
+        print("当前版本：" + version!);
       } else if (str == '-h' || str == '-help') {
         help();
       }
@@ -34,8 +34,7 @@ void main(List<dynamic>? arguments) {
 void help() {
   print('Common commands:');
   print('');
-  print(' 使用命令： dart pub global activate lint_plugin 激活依赖包');
-  print(' 使用命令：init_git_hooks create 创建hooks脚本');
-  print(' Create hooks files in \'.git/hooks\'');
+  print(' 使用命令：dart pub global activate lint_plugin 激活依赖包');
+  print(' 使用命令：init_git_hooks create 创建hooks脚本。Create hooks files in \'.git/hooks\'');
   print('');
 }

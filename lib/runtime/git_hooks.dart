@@ -15,6 +15,7 @@ class GitHooks {
   /// [argument] is just passthrough from main methods. It may ['pre-commit','commit-msg'] from [hookList]
   static void call(List<String> argument, Map<Git, UserBackFun> params) async {
     var type = argument[0];
+    print("GitHooks.call的type：" + type);
     try {
       params.forEach((userType, function) async {
         if (hookList[userType.toString().split('.')[1]] == type) {
