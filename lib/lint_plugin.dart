@@ -8,8 +8,7 @@ import 'package:lint_plugin/utils/utils.dart';
 
 class FlutterGitHooksPlugin {
   static Future<void> gitHooks(List arguments) async {
-    print("1获取到的参数1是：" + arguments[0]);
-    Map<Git, UserBackFun> params = {Git.commitMsg: commitMsg, Git.preCommit: commitMsg};
+    Map<Git, UserBackFun> params = {Git.commitMsg: commitMsg, Git.preCommit: preCommit};
     GitHooks.call(arguments as List<String>, params);
   }
 
