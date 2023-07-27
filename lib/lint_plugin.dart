@@ -10,12 +10,6 @@ class FlutterGitHooksPlugin {
   static Future<void> gitHooks(List arguments) async {
     Map<Git, UserBackFun> params = {Git.commitMsg: commitMsg, Git.preCommit: preCommit};
     GitHooks.call(arguments as List<String>, params);
-    await commitMsg().then((value) {
-      if (value == true) {
-        formatCode();
-        runStaticAnalysis();
-      }
-    });
   }
 
   static void formatCode() {
@@ -26,7 +20,8 @@ class FlutterGitHooksPlugin {
   static Future<bool> runStaticAnalysis() async {
     print('Running static analysis...');
     try {
-      ProcessResult result = await Process.run('dart analyzer', ['bin']);
+      // ProcessResult result = await Process.run('dart analyzer', ['bin']);
+      ProcessResult result = Process.runSync('dart', ['analyze'], runInShell: true);
       print(result.stdout);
       return !(result.exitCode != 0);
     } catch (e) {
@@ -35,7 +30,6 @@ class FlutterGitHooksPlugin {
   }
 
   static Future<bool> preCommit() async {
-    formatCode();
     return await runStaticAnalysis();
   }
 
