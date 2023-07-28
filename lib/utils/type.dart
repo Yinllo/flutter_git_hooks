@@ -1,10 +1,10 @@
 enum Git {
-  commitMsg,
   preCommit,
+  commitMsg,
 }
 
 /// enum to git hooks types
 final Map<String, String> hookList = {
-  'commitMsg': 'commit-msg',
   'preCommit': 'pre-commit',
+  'commitMsg': 'commit-msg',
 };
