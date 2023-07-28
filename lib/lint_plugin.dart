@@ -44,8 +44,9 @@ class FlutterGitHooksPlugin {
 
   /// 获取本次提交的文件
   static List<String> getStagedFiles() {
-    // Use git diff command to get the list of staged files
-    var result = Process.runSync('git', ['diff', '--name-only', '--cached'],
+    // Use git diff command with --diff-filter=d option to get the list of staged files
+    var result = Process.runSync(
+        'git', ['diff', '--name-only', '--cached', '--diff-filter=d'],
         runInShell: true);
     return result.stdout
         .toString()
