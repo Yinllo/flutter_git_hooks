@@ -30,10 +30,11 @@ class FlutterGitHooksPlugin {
       // ProcessResult result = await Process.run('dart analyzer', ['bin']);
       ProcessResult result = Process.runSync('dart', args, runInShell: true);
       print(result.stdout);
-      return !(result.exitCode != 0);
+      if (result.exitCode != 0) return false;
     } catch (e) {
       return false;
     }
+    return true;
   }
 
   static Future<bool> preCommit() async {
