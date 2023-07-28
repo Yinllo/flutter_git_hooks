@@ -16,13 +16,15 @@ class GitHooks {
   static void call(List<String> argument, Map<Git, UserBackFun> params) async {
     var type = argument[0];
     try {
-      params.forEach((userType, function) async {
-        if (hookList[userType.toString().split('.')[1]] == type) {
-          if (!await params[userType]!()) {
-            exit(1);
+      for (var element in argument) {
+        params.forEach((userType, function) async {
+          if (hookList[userType.toString().split('.')[1]] == element) {
+            if (!await params[userType]!()) {
+              exit(1);
+            }
           }
-        }
-      });
+        });
+      }
     } catch (e) {
       print(e);
       print('git_hooks crashed when call ${type},check your function');

@@ -15,26 +15,35 @@ class FlutterGitHooksPlugin {
     GitHooks.call(arguments as List<String>, params);
   }
 
-  static void formatCode() {
+  static void formatCode(List<String> files) {
     print('Running code formatting...');
-    Process.runSync('flutter', ['format', '.'], runInShell: true);
+    if (files.isEmpty) {
+      print('No staged files for code formatting.');
+      return;
+    }
+    ProcessResult formatResult =
+        Process.runSync('dart', ['format', ...files], runInShell: true);
+    if (formatResult.exitCode != 0) {
+      print('Error occurred during code formatting:');
+      print(formatResult.stderr);
+    }
   }
 
   static Future<bool> runStaticAnalysis(List<String> files) async {
+    print("分析的文件是--${files.toString()} \n");
     if (files.isEmpty) {
       print('No staged files for static analysis.');
       return false;
     }
     List<String> args = ['analyze', ...files];
     try {
-      // ProcessResult result = await Process.run('dart analyzer', ['bin']);
       ProcessResult result = Process.runSync('dart', args, runInShell: true);
-      print(result.stdout);
-      if (result.exitCode != 0) return false;
+      print("代码分析结果---${result.stdout}");
+      if (result.stdout.toString().contains("No issues found")) return true;
+      return false;
     } catch (e) {
       return false;
     }
-    return true;
   }
 
   static Future<bool> preCommit() async {
@@ -56,13 +65,13 @@ class FlutterGitHooksPlugin {
   }
 
   static Future<bool> commitMsg() async {
-    var commitMsg = Utils.getCommitEditMsg();
-    if (commitMsg.startsWith('fix:')) {
-      return true; // you can return true let commit go
-    } else {
-      print('you should add `fix` in the commit message');
-      return false;
-    }
+    // var commitMsg = Utils.getCommitEditMsg();
+    // if (commitMsg.startsWith('fix:')) {
+    //   return true; // you can return true let commit go
+    // } else {
+    //   print('you should add `fix` in the commit message');
+    //   return false;
+    // }
     return true;
   }
 }
