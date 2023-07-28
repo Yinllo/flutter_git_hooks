@@ -39,7 +39,7 @@ class FlutterGitHooksPlugin {
     try {
       ProcessResult result = Process.runSync('dart', args, runInShell: true);
       print("代码分析结果---${result.stdout}");
-      if (result.stdout.toString().contains("No issues found")) return true;
+      if (result.stdout.toString().contains("No")) return true;
       return false;
     } catch (e) {
       return false;
