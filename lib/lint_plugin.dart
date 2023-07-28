@@ -7,9 +7,9 @@ import 'package:lint_plugin/utils/type.dart';
 import 'package:lint_plugin/utils/utils.dart';
 
 class FlutterGitHooksPlugin {
-  static Future<void> gitHooks(List arguments) async {
+  static void gitHooks(List arguments) {
     Map<Git, UserBackFun> params = {
-      // Git.commitMsg: commitMsg,
+      Git.commitMsg: commitMsg,
       Git.preCommit: preCommit
     };
     GitHooks.call(arguments as List<String>, params);
@@ -38,21 +38,7 @@ class FlutterGitHooksPlugin {
 
   static Future<bool> preCommit() async {
     List<String> stagedFiles = getStagedFiles();
-    if (stagedFiles.isEmpty) {
-      print('No staged files for static analysis.');
-      return false;
-    }
-    print("stagedFiles文件如下---" + stagedFiles.toString());
-    // return await runStaticAnalysis(stagedFiles);
-    List<String> args = ['analyze', ...stagedFiles];
-    try {
-      // ProcessResult result = await Process.run('dart analyzer', ['bin']);
-      ProcessResult result = Process.runSync('dart', args, runInShell: true);
-      print(result.stdout);
-      return !(result.exitCode != 0);
-    } catch (e) {
-      return false;
-    }
+    return await runStaticAnalysis(stagedFiles);
   }
 
   /// 获取本次提交的文件
