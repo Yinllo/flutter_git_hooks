@@ -9,7 +9,7 @@ import 'package:lint_plugin/utils/utils.dart';
 class FlutterGitHooksPlugin {
   static Future<void> gitHooks(List arguments) async {
     Map<Git, UserBackFun> params = {
-      Git.commitMsg: commitMsg,
+      // Git.commitMsg: commitMsg,
       Git.preCommit: preCommit
     };
     GitHooks.call(arguments as List<String>, params);
