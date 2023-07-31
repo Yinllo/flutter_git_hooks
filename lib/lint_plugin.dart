@@ -25,8 +25,7 @@ class FlutterGitHooksPlugin {
       // Filter out any files that are not Dart files
       var dartFiles = getStagedFiles();
       if (dartFiles.isEmpty) {
-        print('本次没有提交任何文件');
-        return false;
+        return true;
       }
       ProcessResult result;
       // Run the pre-commit checks on each Dart file
@@ -50,7 +49,7 @@ class FlutterGitHooksPlugin {
         String analysisCode = result.stdout.toString().trim();
         if (result.exitCode != 0 || (analysisCode.isNotEmpty && !analysisCode.contains('No issues found'))) {
           print("代码不符合lint规则，需要修复");
-          print("代码分析结果为---${result.stdout}");
+          print("具体问题代码如下：${result.stdout}");
           return false;
         }
         print("代码分析结果为---${result.stdout}");
