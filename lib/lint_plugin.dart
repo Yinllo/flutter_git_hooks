@@ -8,60 +8,57 @@ import 'package:lint_plugin/utils/utils.dart';
 
 class FlutterGitHooksPlugin {
   static void gitHooks(List arguments) {
-    Map<Git, UserBackFun> params = {
-      Git.commitMsg: commitMsg,
-      Git.preCommit: preCommit
-    };
+    Map<Git, UserBackFun> params = {Git.commitMsg: commitMsg, Git.preCommit: preCommit};
     GitHooks.call(arguments as List<String>, params);
   }
 
-  static void formatCode(List<String> files) {
-    print('Running code formatting...');
-    if (files.isEmpty) {
-      print('No staged files for code formatting.');
-      return;
-    }
-    ProcessResult formatResult =
-        Process.runSync('dart', ['format', ...files], runInShell: true);
-    if (formatResult.exitCode != 0) {
-      print('Error occurred during code formatting:');
-      print(formatResult.stderr);
-    }
+  /// 获取本次提交的dart文件
+  static List<String> getStagedFiles() {
+    // Use git diff command with --diff-filter=d option to get the list of staged files
+    var result = Process.runSync('git', ['diff', '--name-only', '--cached', '--diff-filter=d'], runInShell: true);
+    return result.stdout.toString().split('\n').where((file) => file.isNotEmpty && file.endsWith('.dart')).toList();
   }
 
-  static Future<bool> runStaticAnalysis(List<String> files) async {
-    print("分析的文件是--${files.toString()} \n");
-    if (files.isEmpty) {
-      print('No staged files for static analysis.');
-      return false;
-    }
-    List<String> args = ['analyze', ...files];
+  ///commit hook
+  static Future<bool> preCommit() async {
     try {
-      ProcessResult result = Process.runSync('dart', args, runInShell: true);
-      print("代码分析结果---${result.stdout}");
-      if (result.stdout.toString().contains("No")) return true;
-      return false;
+      // Filter out any files that are not Dart files
+      var dartFiles = getStagedFiles();
+      if (dartFiles.isEmpty) {
+        print('本次没有提交任何文件');
+        return false;
+      }
+      ProcessResult result;
+      // Run the pre-commit checks on each Dart file
+      for (var dartFile in dartFiles) {
+        print('开始代码格式化...');
+        result = await Process.run('dart', ['format', dartFile]);
+        // 获取格式化后的日志输出
+        String formattedCode = result.stdout.toString().trim();
+        if (result.exitCode != 0 || (formattedCode.isNotEmpty && !formattedCode.contains('0 changed'))) {
+          print('文件: $dartFile 已经重新格式化，请重新提交');
+          if (formattedCode.isNotEmpty) {
+            print(formattedCode);
+          }
+          return false;
+        }
+
+        print('代码格式化通过');
+        print('代码格式化通过。开始代码分析...');
+        result = await Process.run('dart', ['analyze', dartFile]);
+        // 获取格式化后的日志输出
+        String analysisCode = result.stdout.toString().trim();
+        if (result.exitCode != 0 || (analysisCode.isNotEmpty && !analysisCode.contains('No issues found'))) {
+          print("代码不符合lint规则，需要修复");
+          print("代码分析结果为---${result.stdout}");
+          return false;
+        }
+        print("代码分析结果为---${result.stdout}");
+      }
+      return true;
     } catch (e) {
       return false;
     }
-  }
-
-  static Future<bool> preCommit() async {
-    List<String> stagedFiles = getStagedFiles();
-    return await runStaticAnalysis(stagedFiles);
-  }
-
-  /// 获取本次提交的文件
-  static List<String> getStagedFiles() {
-    // Use git diff command with --diff-filter=d option to get the list of staged files
-    var result = Process.runSync(
-        'git', ['diff', '--name-only', '--cached', '--diff-filter=d'],
-        runInShell: true);
-    return result.stdout
-        .toString()
-        .split('\n')
-        .where((file) => file.isNotEmpty)
-        .toList();
   }
 
   static Future<bool> commitMsg() async {
