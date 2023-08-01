@@ -1,22 +1,53 @@
 include: package:flutter_lints/flutter.yaml
 
+analyzer:
+  # 不包含的文件
+  #  exclude:
+  #    - build/**
+  errors:
+    avoid_empty_else: warning
+    empty_catches: warning
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at
-  # https://dart-lang.github.io/linter/lints/index.html.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
-    avoid_print: true  # Uncomment to disable the `avoid_print` rule
-    always_use_package_imports: true
-    avoid_empty_else: true
+    always_use_package_imports: true # 统一引用使用绝对路径
+
+    camel_case_extensions: true
+    camel_case_types: true # 类名使用使用首字母大写驼峰
+    non_constant_identifier_names: true # 参数名使用首字母小写驼峰
+
+    empty_statements: true # if后不要使用空语句
+    avoid_empty_else: true # 避免空的else
+    empty_catches: true  # 避免 catch 空实现
+    void_checks: true #避免给void赋值
+    avoid_init_to_null: true #初始化属性时避免直接赋值null
+    unrelated_type_equality_checks: true #变量比较之前先判断类型
+    await_only_futures: true #避免 await 非future对象
+    always_declare_return_types: true #声明方法或函数时，始终要指定返回类型
+    annotate_overrides: true #使用父类参数要用overrides修饰
+    avoid_returning_null_for_void: true #声明void返回值的函数不要返回null
+    avoid_single_cascade_in_expression_statements: true #不要用级联表达式调用方法
+    avoid_slow_async_io: true #有一些dart:io库中的方法异步方法比同步方法慢很多，尽量使用同步方法
+    avoid_types_as_parameter_names: true #声明参数名不要和已存在的类型相同
+    avoid_void_async: true #异步方法不要直接返回void
+    cancel_subscriptions: true #StreamSubscription一定要记得cancel
+    avoid_return_types_on_setters: true #set方法不要带返回值
+    avoid_renaming_method_parameters: true #重写的方法不要修改参数名
+    avoid_null_checks_in_equality_operators: true #重写==运算符时不要用来判断是否为null,由于null是一种特殊类型，没有类可以与它等效。因此，检查另一个实例是否为空是多余的。
+    hash_and_equals: true #重写==运算符时要同步重写hashCode
+    avoid_equals_and_hash_code_on_mutable_classes: true #重写==运算符和hashCode的类要添加@immutable标识
+    iterable_contains_unrelated_type: true #不要在不同参数类型中调用contains
+    list_remove_unrelated_type: true #不要在不同参数类型中调用remove
+    no_logic_in_create_state: true #createState()中不要写逻辑代码
+    package_api_docs: true #公用API要提供注释
+    prefer_conditional_assignment: true #使用 ??= 代替判断null
+    prefer_final_in_for_each: true #在for each中不可变值使用final
+    recursive_getters: true #get方法不要返回自身
+    sized_box_for_whitespace: true #布局添加空白使用sizebox代替container，sizeBox更轻量，而且可以用const
+    throw_in_finally: true #try catch final 的final中不要加return、continue、break、throw
+
+
+
 
 # Additional information about this file can be found at
 # https://dart.cn/guides/language/analysis-options
